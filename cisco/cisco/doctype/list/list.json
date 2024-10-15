@@ -1,0 +1,71 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-10-07 06:58:36.825451",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "calling_party_number",
+  "destination_number",
+  "duration",
+  "date_and_time_connect",
+  "date_time_disconnect",
+  "recordtype"
+ ],
+ "fields": [
+  {
+   "fieldname": "calling_party_number",
+   "fieldtype": "Int",
+   "label": "Calling Party NUmber"
+  },
+  {
+   "fieldname": "destination_number",
+   "fieldtype": "Int",
+   "label": "destination Number"
+  },
+  {
+   "fieldname": "duration",
+   "fieldtype": "Int",
+   "label": "Duration"
+  },
+  {
+   "fieldname": "date_and_time_connect",
+   "fieldtype": "Datetime",
+   "label": "Date and Time Connect"
+  },
+  {
+   "fieldname": "date_time_disconnect",
+   "fieldtype": "Int",
+   "label": "Date Time Disconnect"
+  },
+  {
+   "fieldname": "recordtype",
+   "fieldtype": "Data",
+   "label": "recordtype"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-10-08 10:02:49.836013",
+ "modified_by": "Administrator",
+ "module": "cisco",
+ "name": "list",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

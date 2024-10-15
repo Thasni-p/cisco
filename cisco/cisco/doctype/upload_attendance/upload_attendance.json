@@ -1,0 +1,84 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-10-15 07:37:58.487422",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+    "download_template",
+    "att_fr_date",
+    "att_to_date",
+    "get_template",
+    "upload_attendance_data",
+    "upload_html",
+    "import_log"
+   ],
+   "fields": [
+    {
+     "fieldname": "download_template",
+     "fieldtype": "Section Break",
+     "label": "Download Template"
+    },
+    {
+     "fieldname": "att_fr_date",
+     "fieldtype": "Date",
+     "in_list_view": 1,
+     "label": "Attendance From Date",
+     "oldfieldname": "attenadnce_date",
+     "oldfieldtype": "Date",
+     "reqd": 1
+    },
+    {
+     "fieldname": "att_to_date",
+     "fieldtype": "Date",
+     "in_list_view": 1,
+     "label": "Attendance To Date",
+     "reqd": 1
+    },
+    {
+     "fieldname": "get_template",
+     "fieldtype": "Button",
+     "label": "Get Template",
+     "oldfieldtype": "Button"
+    },
+    {
+     "fieldname": "upload_attendance_data",
+     "fieldtype": "Section Break",
+     "label": "Import Attendance"
+    },
+    {
+     "fieldname": "upload_html",
+     "fieldtype": "HTML",
+     "label": "Upload HTML"
+    },
+    {
+     "fieldname": "import_log",
+     "fieldtype": "HTML",
+     "label": "Import Log"
+    }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-10-15 07:39:08.420780",
+ "modified_by": "Administrator",
+ "module": "cisco",
+ "name": "Upload Attendance",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
