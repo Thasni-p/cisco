@@ -30,7 +30,7 @@ def process_cdr(doc_id):
     
 	# Process and read the csv file
 	response = requests.get(csv_url)
-	response.raise_for_status()
+	# response.raise_for_status()
 
 	csv_data = StringIO(response.text)
 	reader = csv.DictReader(csv_data)
