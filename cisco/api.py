@@ -1,6 +1,5 @@
 import frappe
 from frappe import _
-# import json
 import frappe
 from frappe import _
 from frappe.utils.file_manager import save_file
@@ -21,9 +20,7 @@ def upload_cdr_file_csv(fname, csv_file):
 		
 		# Step 2: Attach the CSV file
 		# Decode the file content (csv_file should be base64 encoded)
-		file_data = frappe.safe_decode(csv_file)
-		# file_name = "csvfile.csv"
-		saved_file = save_file(fname, file_data, "CDR Upload", csv_doc.name, decode=True, is_private=True, df="file_attach")
+		saved_file = save_file(fname, csv_file, "CDR Upload", csv_doc.name, decode=True, is_private=False, df="file_attach")
 		
 		# Set the file URL in a custom field'
 		csv_doc.file_attach = saved_file.file_url
