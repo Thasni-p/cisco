@@ -24,22 +24,32 @@ def execute(filters=None):
 
 def get_columns(filters):
 	columns = [
-		{
-			"label": "Date and Time",
-			"fieldname": "connect_datetime",
-			"fieldtype": "datetime",
-			"width": 200
-		},
-        {
-			"label": "Duration",
-			"fieldname": "duration",
-			"fieldtype": "Duration",
-			"width": 150
-		}
+       
 	]
     
 	if filters.get('call_type') == "Incoming":
 		columns.insert(1,
+			{
+			"label": "Date and Time",
+			"fieldname": "connect1_datetime",
+			"fieldtype": "datetime",
+			"width": 200
+		}),
+		columns.insert(1,
+			{
+			"label": "Day",
+			"fieldname": "day",
+			"fieldtype": "Data",
+			"width": 150
+		}),
+		columns.insert(2,
+			{
+			"label": "Duration",
+			"fieldname": "duration",
+			"fieldtype": "Duration",
+			"width": 150
+		}),
+		columns.insert(3,
 			{
 			"label": "Call From",
 			"fieldname": "call_from",
@@ -50,6 +60,27 @@ def get_columns(filters):
 	if filters.get('call_type') == "Outgoing":
 		columns.insert(1,
 			{
+			"label": "Date and Time",
+			"fieldname": "connect1_datetime",
+			"fieldtype": "datetime",
+			"width": 200
+		}),
+		columns.insert(1,
+			{
+			"label": "Day",
+			"fieldname": "day",
+			"fieldtype": "Data",
+			"width": 150
+		}),
+		columns.insert(2,
+			{
+			"label": "Duration",
+			"fieldname": "duration",
+			"fieldtype": "Duration",
+			"width": 150
+		}),
+		columns.insert(3,
+			{
 			"label": "Call To",
 			"fieldname": "call_to",
 			"fieldtype": "Data",
@@ -59,17 +90,66 @@ def get_columns(filters):
 	if filters.get('call_type') == "All":
 		columns.insert(1,
 			{
-			"label": "Call Type",
-			"fieldname": "call_type",
+			"label": "Date and Time",
+			"fieldname": "connect1_datetime",
+			"fieldtype": "datetime",
+			"width": 200
+		}),
+		columns.insert(1,
+			{
+			"label": "Day",
+			"fieldname": "day",
 			"fieldtype": "Data",
 			"width": 150
 		}),
 		columns.insert(2,
 			{
+			"label": "Call Type",
+			"fieldname": "call_type",
+			"fieldtype": "Data",
+			"width": 150
+		}),
+		columns.insert(3,
+			{
+			"label": "Duration",
+			"fieldname": "duration",
+			"fieldtype": "Duration",
+			"width": 150
+		}),
+		columns.insert(4,
+			{
 			"label": "Call To/From",
 			"fieldname": "call_number",
 			"fieldtype": "Data",
 			"width": 150
+		})
+	if filters.get('call_type') == "Missed":
+		columns.insert(1,
+	    {
+			"label": "Date and Time",
+			"fieldname": "connect1_datetime",
+			"fieldtype": "datetime",
+			"width": 200
+		}),
+		columns.insert(1,
+			{
+			"label": "Day",
+			"fieldname": "origin_day",
+			"fieldtype": "Data",
+			"width": 150
+		}),
+		columns.insert(2,
+			{
+			"label": "Duration",
+			"fieldname": "duration",
+			"fieldtype": "Duration",
+			"width": 150
+		}),columns.insert(3,
+			{
+			"label": "Missed To/Missed from",
+			"fieldname": "call_number",
+			"fieldtype": "Data",
+			"width": 200
 		})
             
 	return columns
@@ -81,15 +161,20 @@ def get_data(filters):
 		data = frappe.db.sql(
 		"""
 		SELECT 
-			connect_datetime,
+			connect1_datetime,
 			calling_party_number AS call_from,
 			duration,
-			Forwarded as forw_no
+			Forwarded as forw_no,
+			origin_value,
+			dest_value,
+			day,
+			connect_time
 		FROM 
 			`tabCall Summary`
 		WHERE 
 			org_destination_number = %s
-			AND connect_datetime BETWEEN %s AND %s
+			AND connect1_datetime BETWEEN %s AND %s
+			
 		""",
 		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
 		as_dict=True
@@ -99,15 +184,18 @@ def get_data(filters):
 		data = frappe.db.sql(
 		"""
 		SELECT 
-			connect_datetime,
+			connect1_datetime,
 			org_destination_number AS call_to,
 			duration,
-			Forwarded as forw_no
+			Forwarded as forw_no,
+			origin_value,
+			day,
+			dest_value
 		FROM 
 			`tabCall Summary`
 		WHERE 
 			calling_party_number = %s
-			AND connect_datetime BETWEEN %s AND %s
+			AND connect1_datetime BETWEEN %s AND %s 
 		""",
 		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
 		as_dict=True
@@ -118,15 +206,18 @@ def get_data(filters):
 		"""
 		SELECT
 			'Incoming' AS call_type,
-			connect_datetime,
+			connect1_datetime,
 			calling_party_number AS call_number,
 			duration,
-			Forwarded as forw_no
+			Forwarded as forw_no,
+			origin_value,
+			day,
+			dest_value
 		FROM 
 			`tabCall Summary`
 		WHERE 
 			org_destination_number = %s
-			AND connect_datetime BETWEEN %s AND %s
+			AND connect1_datetime BETWEEN %s AND %s
 		""",
 		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
 		as_dict=True
@@ -135,28 +226,113 @@ def get_data(filters):
 		"""
 		SELECT
 			'Outgoing' AS call_type,
-			connect_datetime,
+			connect1_datetime,
 			org_destination_number AS call_number,
 			duration,
-			Forwarded as forw_no
+			Forwarded as forw_no,
+			origin_value,
+			day,
+			dest_value
 		FROM 
 			`tabCall Summary`
 		WHERE 
 			calling_party_number = %s
-			AND connect_datetime BETWEEN %s AND %s
+			AND connect1_datetime BETWEEN %s AND %s
+		""",
+		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
+		as_dict=True
+	)
+		incoming_missed= frappe.db.sql(
+		"""
+		SELECT
+		   'Missed' AS call_type,
+			connect1_datetime,
+			duration,
+			day,
+			calling_party_number AS call_number
+			
+		FROM 
+			`tabCall Summary`
+		WHERE 
+			org_destination_number = %s
+			AND connect1_datetime BETWEEN %s AND %s
+			AND duration = '0s'
+		""",
+		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
+		as_dict=True
+	)
+		outgoing_missed = frappe.db.sql(
+		"""
+		SELECT
+            'Missed' AS call_type,
+			connect1_datetime,
+			duration,
+			day,
+			org_destination_number AS  call_number
+
+		FROM 
+			`tabCall Summary`
+		WHERE 
+			calling_party_number = %s
+			AND connect1_datetime BETWEEN %s AND %s
+			AND duration = '0s'
 		""",
 		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
 		as_dict=True
 	)
 		data.extend(incoming_data)
 		data.extend(outgoing_data)
+		data.extend(incoming_missed)
+		data.extend(outgoing_missed)
+
+	if filters.get("call_type") == "Missed":
+		incoming_missed= frappe.db.sql(
+		"""
+		SELECT
+			connect1_datetime,
+			duration,
+			day,
+			calling_party_number AS call_number
+			
+		FROM 
+			`tabCall Summary`
+		WHERE 
+			org_destination_number = %s
+			AND connect1_datetime BETWEEN %s AND %s
+			AND duration = '0s'
+		""",
+		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
+		as_dict=True
+	)
+		outgoing_missed = frappe.db.sql(
+		"""
+		SELECT
+
+			connect1_datetime,
+			duration,
+			day,
+			org_destination_number AS  call_number
+
+		FROM 
+			`tabCall Summary`
+		WHERE 
+			calling_party_number = %s
+			AND connect1_datetime BETWEEN %s AND %s
+			AND duration = '0s'
+		""",
+		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
+		as_dict=True
+	)
+		data.extend(incoming_missed)
+		data.extend(outgoing_missed)
+
 
 	return data
 
 def get_summary(filters, data):
     total_calls = len(data)
     total_duration = sum(item['duration'] for item in data if item.get('duration'))
-
+    # frappe.msgprint(str(data))
     if filters.get("call_type") == "Incoming":
         summary = [
             {"label": "Total Incoming Calls", "value": total_calls, "datatype": "Int"},
@@ -173,6 +349,12 @@ def get_summary(filters, data):
             {"label": "Total Calls", "value": total_calls, "datatype": "Int"},
             {"label": "Total Duration", "value": total_duration, "datatype": "Duration"}
         ]
+    elif filters.get("call_type") == "Missed":
+        summary = [
+            {"label": "Total Missed Calls", "value": total_calls, "datatype": "Int"},
+            {"label": "Total Duration", "value": total_duration, "datatype": "Duration"}
+        ]
+    
     
     return summary
 
@@ -181,7 +363,7 @@ def get_chart_data(data):
     durations = []
 
     for idx, row in enumerate(data):
-        labels.append(row.get('connect_datetime').strftime('%Y-%m-%d %H:%M') if row.get('connect_datetime') else f"Call {idx+1}")
+        labels.append(row.get('connect1_datetime').strftime('%Y-%m-%d %H:%M') if row.get('connect1_datetime') else f"Call {idx+1}")
         durations.append(row.get('duration', 0))
     
     chart = {

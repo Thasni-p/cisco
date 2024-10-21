@@ -3,6 +3,7 @@ from frappe import _
 import frappe
 from frappe import _
 from frappe.utils.file_manager import save_file
+from cisco.cisco.doctype.cdr_upload.cdr_upload import process_cdr
 from frappe.utils import today
 
 @frappe.whitelist(allow_guest=True)
@@ -25,10 +26,12 @@ def upload_cdr_file_csv(fname, csv_file):
 		# Set the file URL in a custom field'
 		csv_doc.file_attach = saved_file.file_url
 		csv_doc.save()
+		process_cdr(csv_doc.name)
 		
 		frappe.db.commit()
 		return {"status": "success", "message": _("CDR Uploaded successfully"), "cdr_ref": csv_doc.name}
-	
 	except Exception as e:
 		frappe.log_error(frappe.get_traceback(), _("CDR Upload Creation Failed"))
 		return {"status": "error", "message": str(e)}
+	
+

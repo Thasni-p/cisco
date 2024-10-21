@@ -5,8 +5,8 @@ import requests
 import json
 
 
-directory_path = r'F:\My Project\file_Share_api\csv_file'  # Update this to your directory path
-base_url = 'http://45.8.150.131:8000'
+directory_path = '/home/thasni/Downloads/csv'  # Update this to your directory path
+base_url =  'http://localhost:8000/'
 url = f'{base_url}/api/method/cisco.api.upload_cdr_file_csv' # API endpoint
 API_KEY = 'c4bc9ce3b122462'
 API_SECRET = '0455723ffecde0d'
@@ -54,7 +54,7 @@ def send_file_and_delete(file_path, url, interval):
 def monitor_directory(directory_path, url, api_key=None, interval=10):
     # while True:
         # List all CSV files in the directory
-    files = [f for f in os.listdir(directory_path) if f.lower().endswith('.csv') and os.path.isfile(os.path.join(directory_path, f))]
+    files = [f for f in os.listdir(directory_path) ]
     
     # Process each CSV file
     for file_name in files:

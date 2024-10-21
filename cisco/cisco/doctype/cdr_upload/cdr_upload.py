@@ -41,38 +41,48 @@ def process_cdr(doc_id):
 	dict_reader = csv.DictReader(csv_data, fieldnames=headers)
 
 	for row in dict_reader:
-		connect_timestamp = int(row['dateTimeConnect'])
-		connect_utc_datetime = datetime.fromtimestamp(connect_timestamp, tz=timezone.utc)
-		connect_date_time_origin = connect_utc_datetime.astimezone(system_timezone).replace(tzinfo=None)
+			connect_timestamp = int(row['dateTimeConnect'])
+			connect_utc_datetime = datetime.fromtimestamp(connect_timestamp, tz=timezone.utc)
+			connect_date_time_origin = connect_utc_datetime.astimezone(system_timezone).replace(tzinfo=None)
 
-		disconnect_timestamp = int(row['dateTimeDisconnect'])
-		disconnect_utc_datetime = datetime.fromtimestamp(disconnect_timestamp, tz=timezone.utc)
-		disconnect_date_time_origin = disconnect_utc_datetime.astimezone(system_timezone).replace(tzinfo=None)
-	
-		forward = 0
-		if not row['originalCalledPartyNumber'] == row['finalCalledPartyNumber']:
-			forward = 1
-	    # if(row['dateTimeConnect'] and int(row['dateTimeConnect'])>0 and type(row['dateTimeDisconnect']=='str'))
-		doc = frappe.get_doc({
-            'doctype': 'Call Summary',
-			'cdr_id': doc_id,
-			# 'call_id': row['globalCallID_callId'],
-			'calling_party_number': row['callingPartyNumber'],
-			'org_destination_number': row['originalCalledPartyNumber'],
-			'final_destination_number': row['finalCalledPartyNumber'],
-			'forwarded': forward,
-			'day': get_weekday(getdate(connect_date_time_origin.date())),
-			'connect_datetime': connect_date_time_origin,
-			'disconnect_datetime': disconnect_date_time_origin,
-			'connect_date': connect_date_time_origin.date(),
-			'connect_time': connect_date_time_origin.time(),
-			'disconnect_date': disconnect_date_time_origin.date(),
-			'disconnect_time': disconnect_date_time_origin.time(),
-			'duration': row['duration'],
-			'origin_device_name': row['origDeviceName'],
-			'destination_device_name': row['destDeviceName']
-		})
-		doc.insert(ignore_permissions=True)
+			connect1_timestamp = int(row['dateTimeOrigination'])
+			connect1_utc_datetime = datetime.fromtimestamp(connect1_timestamp, tz=timezone.utc)
+			connect1_date_time_origin = connect1_utc_datetime.astimezone(system_timezone).replace(tzinfo=None)
+
+
+			disconnect_timestamp = int(row['dateTimeDisconnect'])
+			disconnect_utc_datetime = datetime.fromtimestamp(disconnect_timestamp, tz=timezone.utc)
+			disconnect_date_time_origin = disconnect_utc_datetime.astimezone(system_timezone).replace(tzinfo=None)
+		
+			forward = 0
+			if not row['originalCalledPartyNumber'] == row['finalCalledPartyNumber']:
+				forward = 1
+			# if(row['dateTimeConnect'] and int(row['dateTimeConnect'])>0 and type(row['dateTimeDisconnect']=='str'))
+			doc = frappe.get_doc({
+				'doctype': 'Call Summary',
+				'cdr_id': doc_id,
+				# 'call_id': row['globalCallID_callId'],
+				'calling_party_number': row['callingPartyNumber'],
+				'org_destination_number': row['originalCalledPartyNumber'],
+				'final_destination_number': row['finalCalledPartyNumber'],
+				'forwarded': forward,
+				'day': get_weekday(getdate(connect_date_time_origin.date())),
+				'origin_day': get_weekday(getdate(connect1_date_time_origin.date())),
+				'connect1_datetime': connect1_date_time_origin ,
+				'connect_datetime': connect_date_time_origin,
+				'disconnect_datetime': disconnect_date_time_origin,
+				'connect_date': connect_date_time_origin.date(),
+				'connect_time': connect_date_time_origin.time(),
+				'connect1_date': connect1_date_time_origin.date(),
+				'connect1_time': connect1_date_time_origin.time(),
+				'disconnect_date': disconnect_date_time_origin.date(),
+				'disconnect_time': disconnect_date_time_origin.time(),
+				'duration': row['duration'],
+				'origin_device_name': row['origDeviceName'],
+				'destination_device_name': row['destDeviceName']
+
+			})
+			doc.insert(ignore_permissions=True)		
         
 	frappe.db.commit()
 	frappe.msgprint("Data successfully imported.")

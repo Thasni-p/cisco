@@ -29,7 +29,7 @@ frappe.query_reports["Call Report"] = {
             "fieldname": "call_type",
             "label": __("Call Type"),
             "fieldtype": "Select",
-            "options": ["All", "Incoming", "Outgoing"],
+            "options": ["All", "Incoming", "Outgoing","Missed"],
             "default": "All"
         }
     ]

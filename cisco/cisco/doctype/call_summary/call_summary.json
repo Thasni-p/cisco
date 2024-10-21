@@ -25,6 +25,7 @@
   "day",
   "column_break_sttr",
   "disconnect_datetime",
+  "connect1_datetime",
   "disconnect_date",
   "disconnect_time",
   "column_break_ewxy",
@@ -119,6 +120,7 @@
    "label": "Forwarded",
    "read_only": 1
   },
+
   {
    "fieldname": "connect_datetime",
    "fieldtype": "Datetime",
@@ -132,10 +134,21 @@
    "read_only": 1
   },
   {
+    "fieldname": "connect1_datetime",
+    "fieldtype": "Datetime",
+    "label": "orgin connect time",
+    "read_only": 1
+   },
+  {
    "fieldname": "day",
    "fieldtype": "Data",
    "label": "Day"
   },
+  {
+    "fieldname": "origin_day",
+    "fieldtype": "Data",
+    "label": "Origin Day"
+   },
   {
    "default": "CALL-.#######",
    "fieldname": "naming_series",
@@ -155,6 +168,18 @@
    "label": "Connect Time",
    "read_only": 1
   },
+  {
+    "fieldname": "connect1_date",
+    "fieldtype": "Date",
+    "label": "Origin Connect Date",
+    "read_only": 1
+   },
+   {
+    "fieldname": "connect1_time",
+    "fieldtype": "Time",
+    "label": "Origin Connect Time",
+    "read_only": 1
+   },
   {
    "fieldname": "disconnect_date",
    "fieldtype": "Date",
