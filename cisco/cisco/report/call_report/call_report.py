@@ -83,7 +83,7 @@ def get_columns(filters):
 			"label": "Called From",
 			"fieldname": "calling_party_number",
 			"fieldtype": "Data",
-			"width": 150
+			"width": 200
 		}),
 		columns.insert(3,
 			{
@@ -123,17 +123,17 @@ def get_columns(filters):
 		}),
 		columns.insert(4,
 			{
-			"label": "Origin number",
+			"label": "Calling No:/Called no:",
 			"fieldname": "num",
 			"fieldtype": "Data",
-			"width": 150
+			"width": 200
 		}),
 		columns.insert(4,
 			{
 			"label": "Call To/From",
 			"fieldname": "call_number",
 			"fieldtype": "Data",
-			"width": 150
+			"width": 200
 		}),columns.insert(3,
 			{
 			"label": "Duration",
@@ -189,7 +189,7 @@ def get_data(filters):
 			`tabCall Summary`
 		WHERE 
 			org_destination_number = %s
-			AND connect1_datetime BETWEEN %s AND %s
+			AND connect1_date BETWEEN %s AND %s
 			AND duration != '0s'
 			
 		""",
@@ -211,7 +211,7 @@ def get_data(filters):
 			`tabCall Summary`
 		WHERE 
 			calling_party_number = %s
-			AND connect1_datetime BETWEEN %s AND %s 
+			AND connect1_date BETWEEN %s AND %s 
 			AND duration != '0s'
 		""",
 		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
@@ -234,7 +234,7 @@ def get_data(filters):
 			`tabCall Summary`
 		WHERE 
 			org_destination_number = %s
-			AND connect1_datetime BETWEEN %s AND %s
+			AND connect1_date >= %s AND connect1_date <= %s
 			AND duration != '0s'
 		""",
 		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
@@ -254,7 +254,7 @@ def get_data(filters):
 			`tabCall Summary`
 		WHERE 
 			calling_party_number = %s
-			AND connect1_datetime BETWEEN %s AND %s
+			AND connect1_date >= %s AND connect1_date <= %s
 			AND duration != '0s'
 		""",
 		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
@@ -274,7 +274,7 @@ def get_data(filters):
 			`tabCall Summary`
 		WHERE 
 			org_destination_number = %s
-			AND connect1_datetime BETWEEN %s AND %s
+			AND connect1_date >= %s AND connect1_date <=%s
 			AND duration = '0s'
 		""",
 		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
@@ -294,7 +294,7 @@ def get_data(filters):
 			`tabCall Summary`
 		WHERE 
 			calling_party_number = %s
-			AND connect1_datetime BETWEEN %s AND %s
+			AND connect1_date >= %s AND connect1_date <=%s
 			AND duration = '0s'
 		""",
 		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
@@ -318,7 +318,7 @@ def get_data(filters):
 			`tabCall Summary`
 		WHERE 
 			org_destination_number = %s
-			AND connect1_datetime BETWEEN %s AND %s
+			AND connect1_date BETWEEN %s AND %s
 			AND duration = '0s'
 		""",
 		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
@@ -337,7 +337,7 @@ def get_data(filters):
 			`tabCall Summary`
 		WHERE 
 			calling_party_number = %s
-			AND connect1_datetime BETWEEN %s AND %s
+			AND connect1_date BETWEEN %s AND %s
 			AND duration = '0s'
 		""",
 		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
