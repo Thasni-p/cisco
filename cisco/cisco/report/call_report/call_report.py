@@ -98,7 +98,7 @@ def get_columns(filters):
 		columns.insert(1,
 			{
 			"label": "Day",
-			"fieldname": "day",
+			"fieldname": "origin_day",
 			"fieldtype": "Data",
 			"width": 150
 		}),
@@ -165,8 +165,6 @@ def get_data(filters):
 			calling_party_number AS call_from,
 			duration,
 			Forwarded as forw_no,
-			origin_value,
-			dest_value,
 			day,
 			connect_time
 		FROM 
@@ -174,6 +172,7 @@ def get_data(filters):
 		WHERE 
 			org_destination_number = %s
 			AND connect1_datetime BETWEEN %s AND %s
+			AND duration != '0s'
 			
 		""",
 		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
@@ -188,14 +187,13 @@ def get_data(filters):
 			org_destination_number AS call_to,
 			duration,
 			Forwarded as forw_no,
-			origin_value,
-			day,
-			dest_value
+			day
 		FROM 
 			`tabCall Summary`
 		WHERE 
 			calling_party_number = %s
 			AND connect1_datetime BETWEEN %s AND %s 
+			AND duration != '0s'
 		""",
 		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
 		as_dict=True
@@ -210,14 +208,13 @@ def get_data(filters):
 			calling_party_number AS call_number,
 			duration,
 			Forwarded as forw_no,
-			origin_value,
-			day,
-			dest_value
+			origin_day
 		FROM 
 			`tabCall Summary`
 		WHERE 
 			org_destination_number = %s
 			AND connect1_datetime BETWEEN %s AND %s
+			AND duration != '0s'
 		""",
 		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
 		as_dict=True
@@ -230,14 +227,13 @@ def get_data(filters):
 			org_destination_number AS call_number,
 			duration,
 			Forwarded as forw_no,
-			origin_value,
-			day,
-			dest_value
+			origin_day
 		FROM 
 			`tabCall Summary`
 		WHERE 
 			calling_party_number = %s
 			AND connect1_datetime BETWEEN %s AND %s
+			AND duration != '0s'
 		""",
 		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
 		as_dict=True
@@ -248,7 +244,7 @@ def get_data(filters):
 		   'Missed' AS call_type,
 			connect1_datetime,
 			duration,
-			day,
+			origin_day,
 			calling_party_number AS call_number
 			
 		FROM 
@@ -267,7 +263,7 @@ def get_data(filters):
             'Missed' AS call_type,
 			connect1_datetime,
 			duration,
-			day,
+			origin_day,
 			org_destination_number AS  call_number
 
 		FROM 
@@ -291,7 +287,7 @@ def get_data(filters):
 		SELECT
 			connect1_datetime,
 			duration,
-			day,
+			origin_day,
 			calling_party_number AS call_number
 			
 		FROM 
@@ -310,7 +306,7 @@ def get_data(filters):
 
 			connect1_datetime,
 			duration,
-			day,
+			origin_day,
 			org_destination_number AS  call_number
 
 		FROM 
