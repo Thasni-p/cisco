@@ -42,18 +42,25 @@ def get_columns(filters):
 			"fieldtype": "Data",
 			"width": 150
 		}),
+		columns.insert(3,
+			{
+			"label": "Called party number",
+			"fieldname": "org_destination_number",
+			"fieldtype": "Data",
+			"width": 150
+		})
+		columns.insert(3,
+			{
+			"label": "Called From",
+			"fieldname": "call_from",
+			"fieldtype": "Data",
+			"width": 150
+		})
 		columns.insert(2,
 			{
 			"label": "Duration",
 			"fieldname": "duration",
 			"fieldtype": "Duration",
-			"width": 150
-		}),
-		columns.insert(3,
-			{
-			"label": "Call From",
-			"fieldname": "call_from",
-			"fieldtype": "Data",
 			"width": 150
 		})
     
@@ -71,12 +78,11 @@ def get_columns(filters):
 			"fieldname": "day",
 			"fieldtype": "Data",
 			"width": 150
-		}),
-		columns.insert(2,
+		}),columns.insert(3,
 			{
-			"label": "Duration",
-			"fieldname": "duration",
-			"fieldtype": "Duration",
+			"label": "Called From",
+			"fieldname": "calling_party_number",
+			"fieldtype": "Data",
 			"width": 150
 		}),
 		columns.insert(3,
@@ -84,6 +90,12 @@ def get_columns(filters):
 			"label": "Call To",
 			"fieldname": "call_to",
 			"fieldtype": "Data",
+			"width": 150
+		}),columns.insert(2,
+			{
+			"label": "Duration",
+			"fieldname": "duration",
+			"fieldtype": "Duration",
 			"width": 150
 		})
             
@@ -109,11 +121,11 @@ def get_columns(filters):
 			"fieldtype": "Data",
 			"width": 150
 		}),
-		columns.insert(3,
+		columns.insert(4,
 			{
-			"label": "Duration",
-			"fieldname": "duration",
-			"fieldtype": "Duration",
+			"label": "Origin number",
+			"fieldname": "num",
+			"fieldtype": "Data",
 			"width": 150
 		}),
 		columns.insert(4,
@@ -122,7 +134,13 @@ def get_columns(filters):
 			"fieldname": "call_number",
 			"fieldtype": "Data",
 			"width": 150
-		})
+		}),columns.insert(3,
+			{
+			"label": "Duration",
+			"fieldname": "duration",
+			"fieldtype": "Duration",
+			"width": 150
+		}),
 	if filters.get('call_type') == "Missed":
 		columns.insert(1,
 	    {
@@ -137,19 +155,18 @@ def get_columns(filters):
 			"fieldname": "origin_day",
 			"fieldtype": "Data",
 			"width": 150
-		}),
-		columns.insert(2,
-			{
-			"label": "Duration",
-			"fieldname": "duration",
-			"fieldtype": "Duration",
-			"width": 150
 		}),columns.insert(3,
 			{
 			"label": "Missed To/Missed from",
 			"fieldname": "call_number",
 			"fieldtype": "Data",
 			"width": 200
+		}),columns.insert(2,
+			{
+			"label": "Duration",
+			"fieldname": "duration",
+			"fieldtype": "Duration",
+			"width": 150
 		})
             
 	return columns
@@ -166,7 +183,8 @@ def get_data(filters):
 			duration,
 			Forwarded as forw_no,
 			day,
-			connect_time
+			connect_time,
+			org_destination_number
 		FROM 
 			`tabCall Summary`
 		WHERE 
@@ -187,6 +205,7 @@ def get_data(filters):
 			org_destination_number AS call_to,
 			duration,
 			Forwarded as forw_no,
+			calling_party_number,
 			day
 		FROM 
 			`tabCall Summary`
@@ -208,7 +227,9 @@ def get_data(filters):
 			calling_party_number AS call_number,
 			duration,
 			Forwarded as forw_no,
-			origin_day
+			origin_day,
+			org_destination_number as num
+
 		FROM 
 			`tabCall Summary`
 		WHERE 
@@ -227,7 +248,8 @@ def get_data(filters):
 			org_destination_number AS call_number,
 			duration,
 			Forwarded as forw_no,
-			origin_day
+			origin_day,
+			calling_party_number as num
 		FROM 
 			`tabCall Summary`
 		WHERE 
@@ -245,7 +267,8 @@ def get_data(filters):
 			connect1_datetime,
 			duration,
 			origin_day,
-			calling_party_number AS call_number
+			calling_party_number AS call_number,
+			org_destination_number as num
 			
 		FROM 
 			`tabCall Summary`
@@ -264,7 +287,8 @@ def get_data(filters):
 			connect1_datetime,
 			duration,
 			origin_day,
-			org_destination_number AS  call_number
+			org_destination_number AS  call_number,
+		    calling_party_number as num
 
 		FROM 
 			`tabCall Summary`
