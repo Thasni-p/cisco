@@ -178,6 +178,7 @@ def get_data(filters):
 		data = frappe.db.sql(
 		"""
 		SELECT 
+		   'Incoming' AS call_type,
 			connect1_datetime,
 			calling_party_number AS call_from,
 			duration,
@@ -201,6 +202,7 @@ def get_data(filters):
 		data = frappe.db.sql(
 		"""
 		SELECT 
+		   'Outgoing' AS call_type,
 			connect1_datetime,
 			org_destination_number AS call_to,
 			duration,
@@ -309,6 +311,7 @@ def get_data(filters):
 		incoming_missed= frappe.db.sql(
 		"""
 		SELECT
+		   'Missed' AS call_type,
 			connect1_datetime,
 			duration,
 			origin_day,
@@ -327,7 +330,7 @@ def get_data(filters):
 		outgoing_missed = frappe.db.sql(
 		"""
 		SELECT
-
+            'Missed' AS call_type,
 			connect1_datetime,
 			duration,
 			origin_day,
@@ -351,8 +354,10 @@ def get_data(filters):
 
 def get_summary(filters, data):
     total_calls = len(data)
+    count_of_in= sum(1 for call in data if call['call_type'] == 'Incoming')
+    count_of_out= sum(1 for call in data if call['call_type'] == 'Outgoing')
+    count_of_miss= sum(1 for call in data if call['call_type'] == 'Missed')
     total_duration = sum(item['duration'] for item in data if item.get('duration'))
-    # frappe.msgprint(str(data))
     if filters.get("call_type") == "Incoming":
         summary = [
             {"label": "Total Incoming Calls", "value": total_calls, "datatype": "Int"},
@@ -367,6 +372,9 @@ def get_summary(filters, data):
     elif filters.get("call_type") == "All":
         summary = [
             {"label": "Total Calls", "value": total_calls, "datatype": "Int"},
+			{"label": "Total Calls", "value": count_of_in ,"datatype": "Int"},
+			{"label": "Total Calls", "value": count_of_out, "datatype": "Int"},
+			{"label": "Total Calls", "value": count_of_miss, "datatype": "Int"},
             {"label": "Total Duration", "value": total_duration, "datatype": "Duration"}
         ]
     elif filters.get("call_type") == "Missed":
