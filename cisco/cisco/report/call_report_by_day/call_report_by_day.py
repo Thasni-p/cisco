@@ -27,9 +27,9 @@ def execute(filters=None):
 def get_columns(filters):
 	columns = [
 		{
-			"label": "Date and Time",
-			"fieldname": "connect_datetime",
-			"fieldtype": "datetime",
+			"label": "Date",
+			"fieldname": "connect1_date",
+			"fieldtype": "date",
 			"width": 200
 		},
 		 {
@@ -44,7 +44,7 @@ def get_columns(filters):
 		columns.insert(1,
 			{
 			"label": "Day",
-			"fieldname": "day",
+			"fieldname": "origin_day",
 			"fieldtype": "Data",
 			"width": 150
 		}),columns.insert(3,
@@ -59,7 +59,7 @@ def get_columns(filters):
 		columns.insert(1,
 			{
 			"label": "Day",
-			"fieldname": "day",
+			"fieldname": "origin_day",
 			"fieldtype": "Data",
 			"width": 150
 		}),columns.insert(2,
@@ -69,7 +69,21 @@ def get_columns(filters):
 			"fieldtype": "Data",
 			"width": 150
 		})
-            
+	if filters.get('call_type') == "Missed":
+		columns.insert(1,
+			{
+			"label": "Day",
+			"fieldname": "origin_day",
+			"fieldtype": "Data",
+			"width": 150
+		}),columns.insert(2,
+		{
+			"label": "Number of Calls",
+			"fieldname": "no_calls",
+			"fieldtype": "Data",
+			"width": 150
+		})
+			    
 	if filters.get('call_type') == "All":
 		columns.insert(1,
 			{
@@ -80,7 +94,7 @@ def get_columns(filters):
 		}),columns.insert(2,
 		{
 			"label": "Day",
-			"fieldname": "day",
+			"fieldname": "origin_day",
 			"fieldtype": "Data",
 			"width": 150
 		}),columns.insert(3,
@@ -106,14 +120,15 @@ def get_data(filters):
 			sum(duration) as dur,
 			Forwarded,
 			origin_device_name,
+			connect1_date,
 			destination_device_name,
-			day
+			origin_day
 		FROM 
 			`tabCall Summary`
 		WHERE 
 			org_destination_number = %s
-			AND connect_datetime BETWEEN %s AND %s
-			group by day
+			AND connect1_date BETWEEN %s AND %s
+			group by origin_day
 		""",
 		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
 		as_dict=True
@@ -128,15 +143,16 @@ def get_data(filters):
 			count(org_destination_number) as no_calls,
 			sum(duration) as dur,
 			Forwarded,
+			connect1_date,
 			origin_device_name,
 			destination_device_name,
-			day
+			origin_day
 		FROM 
 			`tabCall Summary`
 		WHERE 
 			calling_party_number = %s
-			AND connect_datetime BETWEEN %s AND %s
-			group by day
+			AND connect1_date BETWEEN %s AND %s
+			group by origin_day
 		""",
 		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
 		as_dict=True
@@ -152,15 +168,16 @@ def get_data(filters):
 			count(calling_party_number) as no_calls,
 			sum(duration) as dur,
 			Forwarded,
+			connect1_date,
 			origin_device_name,
 			destination_device_name,
-			day
+			origin_day
 		FROM 
 			`tabCall Summary`
 		WHERE 
 			org_destination_number = %s
-			AND connect_datetime BETWEEN %s AND %s
-			group by day
+			AND connect1_date BETWEEN %s AND %s
+			group by origin_day
 		""",
 		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
 		as_dict=True
@@ -174,22 +191,69 @@ def get_data(filters):
 			count(org_destination_number) as no_calls,
 			sum(duration) as dur,
 			Forwarded,
+			connect1_date,
 			origin_device_name,
 			destination_device_name,
-			day
+			origin_day
 		FROM 
 			`tabCall Summary`
 		WHERE 
 			calling_party_number = %s
-			AND connect_datetime BETWEEN %s AND %s
-			group by day
+			AND connect1_date BETWEEN %s AND %s
+			group by origin_day
+		""",
+		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
+		as_dict=True
+	)
+		incoming_missed= frappe.db.sql(
+		"""
+		SELECT
+		   'Incoming Missed' AS call_type,
+			connect1_datetime,
+			duration,
+			origin_day,
+			connect1_date,
+			calling_party_number AS call_number,
+			count(calling_party_number) AS no_calls
+
+		FROM 
+			`tabCall Summary`
+		WHERE 
+			org_destination_number = %s
+			AND connect1_date BETWEEN %s AND %s
+			AND duration = '0s'
+			group by origin_day
+		""",
+		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
+		as_dict=True
+	)
+		outgoing_missed = frappe.db.sql(
+		"""
+		SELECT
+            'Outgoing Missed' AS call_type,
+			connect1_datetime,
+			duration,
+			origin_day,
+			connect1_date,
+			org_destination_number AS  call_number,
+			count(org_destination_number) as no_calls
+
+		FROM 
+			`tabCall Summary`
+		WHERE 
+			calling_party_number = %s
+			AND connect1_date BETWEEN %s AND %s
+			AND duration = '0s'
+			group by origin_day
+		
 		""",
 		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
 		as_dict=True
 	)
 		data.extend(incoming_data)
 		data.extend(outgoing_data)
-
+		data.extend(incoming_missed)
+		data.extend(outgoing_missed)
 	return data
 
 def get_summary(filters, data):
@@ -220,7 +284,7 @@ def get_chart_data(data):
     callnumbers = []
 
     for idx, row in enumerate(data):
-        labels.append(row.get('day') if row.get('day') else f"Call {idx+1}")
+        labels.append(row.get('origin_day') if row.get('origin_day') else f"Call {idx+1}")
         callnumbers.append(row.get('no_calls', 0))
     
     chart = {

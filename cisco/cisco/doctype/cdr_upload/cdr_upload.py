@@ -54,6 +54,7 @@ def process_cdr(doc_id):
 			disconnect_utc_datetime = datetime.fromtimestamp(disconnect_timestamp, tz=timezone.utc)
 			disconnect_date_time_origin = disconnect_utc_datetime.astimezone(system_timezone).replace(tzinfo=None)
 		
+		
 			forward = 0
 			if not row['originalCalledPartyNumber'] == row['finalCalledPartyNumber']:
 				forward = 1

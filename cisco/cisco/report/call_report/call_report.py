@@ -42,18 +42,25 @@ def get_columns(filters):
 			"fieldtype": "Data",
 			"width": 150
 		}),
+		columns.insert(3,
+			{
+			"label": "Called party number",
+			"fieldname": "org_destination_number",
+			"fieldtype": "Data",
+			"width": 150
+		})
+		columns.insert(3,
+			{
+			"label": "Called From",
+			"fieldname": "call_from",
+			"fieldtype": "Data",
+			"width": 150
+		})
 		columns.insert(2,
 			{
 			"label": "Duration",
 			"fieldname": "duration",
 			"fieldtype": "Duration",
-			"width": 150
-		}),
-		columns.insert(3,
-			{
-			"label": "Call From",
-			"fieldname": "call_from",
-			"fieldtype": "Data",
 			"width": 150
 		})
     
@@ -71,19 +78,24 @@ def get_columns(filters):
 			"fieldname": "day",
 			"fieldtype": "Data",
 			"width": 150
-		}),
-		columns.insert(2,
+		}),columns.insert(3,
 			{
-			"label": "Duration",
-			"fieldname": "duration",
-			"fieldtype": "Duration",
-			"width": 150
+			"label": "Called From",
+			"fieldname": "calling_party_number",
+			"fieldtype": "Data",
+			"width": 200
 		}),
 		columns.insert(3,
 			{
 			"label": "Call To",
 			"fieldname": "call_to",
 			"fieldtype": "Data",
+			"width": 150
+		}),columns.insert(2,
+			{
+			"label": "Duration",
+			"fieldname": "duration",
+			"fieldtype": "Duration",
 			"width": 150
 		})
             
@@ -98,7 +110,7 @@ def get_columns(filters):
 		columns.insert(1,
 			{
 			"label": "Day",
-			"fieldname": "day",
+			"fieldname": "origin_day",
 			"fieldtype": "Data",
 			"width": 150
 		}),
@@ -109,20 +121,26 @@ def get_columns(filters):
 			"fieldtype": "Data",
 			"width": 150
 		}),
-		columns.insert(3,
+		columns.insert(4,
 			{
-			"label": "Duration",
-			"fieldname": "duration",
-			"fieldtype": "Duration",
-			"width": 150
+			"label": "Calling No:/Called no:",
+			"fieldname": "num",
+			"fieldtype": "Data",
+			"width": 200
 		}),
 		columns.insert(4,
 			{
 			"label": "Call To/From",
 			"fieldname": "call_number",
 			"fieldtype": "Data",
+			"width": 200
+		}),columns.insert(3,
+			{
+			"label": "Duration",
+			"fieldname": "duration",
+			"fieldtype": "Duration",
 			"width": 150
-		})
+		}),
 	if filters.get('call_type') == "Missed":
 		columns.insert(1,
 	    {
@@ -137,19 +155,18 @@ def get_columns(filters):
 			"fieldname": "origin_day",
 			"fieldtype": "Data",
 			"width": 150
-		}),
-		columns.insert(2,
-			{
-			"label": "Duration",
-			"fieldname": "duration",
-			"fieldtype": "Duration",
-			"width": 150
 		}),columns.insert(3,
 			{
 			"label": "Missed To/Missed from",
 			"fieldname": "call_number",
 			"fieldtype": "Data",
 			"width": 200
+		}),columns.insert(2,
+			{
+			"label": "Duration",
+			"fieldname": "duration",
+			"fieldtype": "Duration",
+			"width": 150
 		})
             
 	return columns
@@ -165,15 +182,15 @@ def get_data(filters):
 			calling_party_number AS call_from,
 			duration,
 			Forwarded as forw_no,
-			origin_value,
-			dest_value,
 			day,
-			connect_time
+			connect_time,
+			org_destination_number
 		FROM 
 			`tabCall Summary`
 		WHERE 
 			org_destination_number = %s
-			AND connect1_datetime BETWEEN %s AND %s
+			AND connect1_date BETWEEN %s AND %s
+			AND duration != '0s'
 			
 		""",
 		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
@@ -188,14 +205,14 @@ def get_data(filters):
 			org_destination_number AS call_to,
 			duration,
 			Forwarded as forw_no,
-			origin_value,
-			day,
-			dest_value
+			calling_party_number,
+			day
 		FROM 
 			`tabCall Summary`
 		WHERE 
 			calling_party_number = %s
-			AND connect1_datetime BETWEEN %s AND %s 
+			AND connect1_date BETWEEN %s AND %s 
+			AND duration != '0s'
 		""",
 		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
 		as_dict=True
@@ -210,14 +227,15 @@ def get_data(filters):
 			calling_party_number AS call_number,
 			duration,
 			Forwarded as forw_no,
-			origin_value,
-			day,
-			dest_value
+			origin_day,
+			org_destination_number as num
+
 		FROM 
 			`tabCall Summary`
 		WHERE 
 			org_destination_number = %s
-			AND connect1_datetime BETWEEN %s AND %s
+			AND connect1_date >= %s AND connect1_date <= %s
+			AND duration != '0s'
 		""",
 		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
 		as_dict=True
@@ -230,14 +248,14 @@ def get_data(filters):
 			org_destination_number AS call_number,
 			duration,
 			Forwarded as forw_no,
-			origin_value,
-			day,
-			dest_value
+			origin_day,
+			calling_party_number as num
 		FROM 
 			`tabCall Summary`
 		WHERE 
 			calling_party_number = %s
-			AND connect1_datetime BETWEEN %s AND %s
+			AND connect1_date >= %s AND connect1_date <= %s
+			AND duration != '0s'
 		""",
 		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
 		as_dict=True
@@ -248,14 +266,15 @@ def get_data(filters):
 		   'Missed' AS call_type,
 			connect1_datetime,
 			duration,
-			day,
-			calling_party_number AS call_number
+			origin_day,
+			calling_party_number AS call_number,
+			org_destination_number as num
 			
 		FROM 
 			`tabCall Summary`
 		WHERE 
 			org_destination_number = %s
-			AND connect1_datetime BETWEEN %s AND %s
+			AND connect1_date >= %s AND connect1_date <=%s
 			AND duration = '0s'
 		""",
 		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
@@ -267,14 +286,15 @@ def get_data(filters):
             'Missed' AS call_type,
 			connect1_datetime,
 			duration,
-			day,
-			org_destination_number AS  call_number
+			origin_day,
+			org_destination_number AS  call_number,
+		    calling_party_number as num
 
 		FROM 
 			`tabCall Summary`
 		WHERE 
 			calling_party_number = %s
-			AND connect1_datetime BETWEEN %s AND %s
+			AND connect1_date >= %s AND connect1_date <=%s
 			AND duration = '0s'
 		""",
 		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
@@ -291,14 +311,14 @@ def get_data(filters):
 		SELECT
 			connect1_datetime,
 			duration,
-			day,
+			origin_day,
 			calling_party_number AS call_number
 			
 		FROM 
 			`tabCall Summary`
 		WHERE 
 			org_destination_number = %s
-			AND connect1_datetime BETWEEN %s AND %s
+			AND connect1_date BETWEEN %s AND %s
 			AND duration = '0s'
 		""",
 		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
@@ -310,14 +330,14 @@ def get_data(filters):
 
 			connect1_datetime,
 			duration,
-			day,
+			origin_day,
 			org_destination_number AS  call_number
 
 		FROM 
 			`tabCall Summary`
 		WHERE 
 			calling_party_number = %s
-			AND connect1_datetime BETWEEN %s AND %s
+			AND connect1_date BETWEEN %s AND %s
 			AND duration = '0s'
 		""",
 		(filters.get("agent_number"), filters.get("from_date"), filters.get("to_date")),
