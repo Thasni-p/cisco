@@ -1,0 +1,27 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2024-10-26 10:43:38.796149",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letterhead": null,
+ "modified": "2024-10-26 10:43:38.796149",
+ "modified_by": "Administrator",
+ "module": "cisco",
+ "name": "DATA CENTER",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "Data Center",
+ "report_name": "DATA CENTER",
+ "report_type": "Script Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  }
+ ],
+ "timeout": 0
+}
