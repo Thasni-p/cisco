@@ -13,7 +13,7 @@ def execute(filters=None):
 	summary = get_summary(filters, data)
 	chart = get_chart_data(data)
     
-	return columns, data, None, chart, summary
+	return columns, data, None, summary,chart
 
 def get_columns(filters):
 	columns = [
@@ -51,7 +51,7 @@ def get_columns(filters):
 	if filters.get('status') == "All":
 		columns.insert(0,
 			{
-			"label": "status",
+			"label": "Status",
 			"fieldname": "status",
 			"fieldtype": "Data",
 			"width": 150
@@ -203,28 +203,8 @@ def get_summary(filters, data):
     
     return summary
 def get_chart_data(data):
-    labels = []
-    durations = []
-
-    for idx, row in enumerate(data):
-        labels.append(row.get('date1').strftime('%Y-%m-%d ') )
-        durations.append(row.get('workflow_state', 0))
     
-    chart = {
-        "data": {
-            "labels": labels,
-            "datasets": [
-                {
-                    "name": "workflow_state",
-                    "values": durations
-                }
-            ]
-        },
-        "type": "pie",
-        "height": 300,
-        "colors": ["#FF5733"]
-    }
 
-    return chart
+    return 
 
 
