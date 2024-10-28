@@ -10,14 +10,14 @@ def execute(filters=None):
 
 	columns = get_columns(filters)
 	data = get_data(filters)
-	summary = get_summary(filters, data)
-	chart = get_chart_data(data)
-    
-	return columns, data, None, summary,chart
+	summary = get_summary()
+	chart = get_chart_data()
+	
+	return columns, data, None ,chart, summary
 
 def get_columns(filters):
 	columns = [
-        {
+		{
 			"label": "Applicant Name",
 			"fieldname": "applicant_name",
 			"fieldtype": "data",
@@ -29,7 +29,7 @@ def get_columns(filters):
 			"fieldtype": "data",
 			"width": 250
 		},
-		 {
+		{
 			"label": "Applicant Contact Number",
 			"fieldname": "applicant_contact_number",
 			"fieldtype": "Phone",
@@ -46,165 +46,97 @@ def get_columns(filters):
 			"fieldname": "katara_it_managerhead_of_it_operations__name",
 			"fieldtype": "data",
 			"width": 200
-		}
-	]
-	if filters.get('status') == "All":
-		columns.insert(0,
-			{
+		},
+		{
+
 			"label": "Status",
 			"fieldname": "status",
 			"fieldtype": "Data",
 			"width": 150
-		})
+		}
+	]
 
 	return columns
 
 def get_data(filters):
 	data = []
-    
-	if filters.get("status") == "Draft":
+	
+	status = filters.get("status")
+	if  status == "All":
 		data = frappe.db.sql(
-		"""
-		SELECT 
-			applicant_name,
-			applicant_departmentcompany,
-			applicant_contact_number,
-			date1,
-			katara_it_managerhead_of_it_operations__name
-		FROM 
-			`tabData Center`
-		WHERE 
-			workflow_state = %s
-			
-		""",
-		(filters.get("status")),
-		as_dict=True
-	)
-	if filters.get("status") == "Rejected":
+			"""
+			SELECT 
+				applicant_name,
+				applicant_departmentcompany,
+				applicant_contact_number,
+				date1,
+				katara_it_managerhead_of_it_operations__name,
+				workflow_state
+			FROM 
+				`tabData Center`
+			""",
+			as_dict=True
+		)
+	else:
 		data = frappe.db.sql(
-		"""
-		SELECT 
-			applicant_name,
-			applicant_departmentcompany,
-			applicant_contact_number,
-			date1,
-			katara_it_managerhead_of_it_operations__name
-		FROM 
-			`tabData Center`
-		WHERE 
-			workflow_state = %s
-			
-		""",
-		(filters.get("status")),
-		as_dict=True
-	)
-	if filters.get("status") == "Approval pending":
-		data = frappe.db.sql(
-		"""
-		SELECT 
-			applicant_name,
-			applicant_departmentcompany,
-			applicant_contact_number,
-			date1,
-			katara_it_managerhead_of_it_operations__name
-		FROM 
-			`tabData Center`
-		WHERE 
-			workflow_state = %s
-			
-		""",
-		(filters.get("status")),
-		as_dict=True
-	)
-	if filters.get("status") == "Approved":
-		data = frappe.db.sql(
-		"""
-		SELECT 
-			applicant_name,
-			applicant_departmentcompany,
-			applicant_contact_number,
-			date1,
-			katara_it_managerhead_of_it_operations__name
-		FROM 
-			`tabData Center`
-		WHERE 
-			workflow_state = %s
-			
-		""",
-		(filters.get("status")),
-		as_dict=True
-	)
-	if filters.get("status") == "Cancelled":
-		data = frappe.db.sql(
-		"""
-		SELECT 
-			applicant_name,
-			applicant_departmentcompany,
-			applicant_contact_number,
-			date1,
-			katara_it_managerhead_of_it_operations__name
-		FROM 
-			`tabData Center`
-		WHERE 
-			workflow_state = %s
-			
-		""",
-		(filters.get("status")),
-		as_dict=True
-	)
-	if filters.get("status") == "All":
-		data1 = frappe.db.sql(
-	    """
-		SELECT 
-		    workflow_state  AS status,
-			applicant_name,
-			applicant_departmentcompany,
-			applicant_contact_number,
-			date1,
-			katara_it_managerhead_of_it_operations__name
-		FROM 
-			`tabData Center`
-		
-			
-		""",
-		
-	)
-		data.extend(data1)
+			"""
+			SELECT 
+				workflow_state  AS status,
+				applicant_name,
+				applicant_departmentcompany,
+				applicant_contact_number,
+				date1,
+				katara_it_managerhead_of_it_operations__name
+			FROM 
+				`tabData Center`
+			WHERE 
+				workflow_state = %s
+				
+			""",
+			(filters.get("status")),
+			as_dict=True
+		)
 		
 
 	return data
 
-def get_summary(filters, data):
-    total_status = len(data)
-    if filters.get("status") == "Draft":
-        summary = [
-            {"label": "Total Draft Requests", "value": total_status, "datatype": "Int"}
-        ]
-    elif filters.get("status") == "Rejected":
-        summary = [
-            {"label": "Total Rejected Request", "value": total_status, "datatype": "Int"}
-        ]
-    elif filters.get("status") == "Approval pending":
-        summary = [
-            {"label": "Total Pending Aprroval Request", "value": total_status, "datatype": "Int"}
-        ]
-    elif filters.get("status") == "Approved":
-        summary = [
-            {"label": "Total Approved Request", "value": total_status, "datatype": "Int"}
-        ]
-    elif filters.get("status") == "Cancelled":
-        summary = [
-            {"label": "Total Cancelled Request", "value": total_status, "datatype": "Int"}
-        ]
-    elif filters.get("status") == "All":
-        summary = [
-            {"label": "Total Requests", "value": total_status, "datatype": "Int"}
-        ]
+def get_summary():
+	data = frappe.db.get_all("Data Center", pluck="workflow_state")
+	summary = [
+		{"label": "Total Draft Requests", "value": data.count("Draft"), "datatype": "Int"}
+	]
+	summary += [
+		{"label": "Total Rejected Request", "value": data.count("Rejected"), "datatype": "Int"}
+	]
+	summary += [
+		{"label": "Total Pending Aprroval Request", "value": data.count("Approval pending"), "datatype": "Int"}
+	]
+	summary += [
+		{"label": "Total Approved Request", "value": data.count("Approved"), "datatype": "Int"}
+	]
+	summary += [
+		{"label": "Total Cancelled Request", "value": data.count("Cancelled"), "datatype": "Int"}
+	]
+	summary += [
+		{"label": "Total Requests", "value": len(data), "datatype": "Int"}
+	]
+	
+	return summary
+
+
+from collections import Counter
+
+def get_chart_data():
+    data = frappe.db.get_all("Data Center", pluck="workflow_state")
     
-    return summary
-def get_chart_data(data):
+    status_count = Counter(data)
     
-
-    return 
-
-
+    labels = list(status_count.keys())
+    
+    values = [status_count[label] for label in labels]
+    
+    return {
+        "data": {"labels": labels, "datasets": [{"values": values}]},
+        "type": "donut",
+        "height": 300,
+    }
