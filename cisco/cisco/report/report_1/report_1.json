@@ -10,7 +10,7 @@
  "is_standard": "Yes",
  "json": "{\"columns\":[{\"label\":\"Date and Time\",\"fieldname\":\"connect_datetime\",\"fieldtype\":\"datetime\",\"width\":200,\"id\":\"connect_datetime\",\"name\":\"Date and Time\",\"editable\":false,\"compareValue\":null},{\"label\":\"Call Type\",\"fieldname\":\"call_type\",\"fieldtype\":\"Data\",\"width\":150,\"id\":\"call_type\",\"name\":\"Call Type\",\"editable\":false,\"compareValue\":null},{\"label\":\"Call To/From\",\"fieldname\":\"call_number\",\"fieldtype\":\"Data\",\"width\":150,\"id\":\"call_number\",\"name\":\"Call To/From\",\"editable\":false,\"compareValue\":null},{\"label\":\"Duration\",\"fieldname\":\"duration\",\"fieldtype\":\"Duration\",\"width\":150,\"id\":\"duration\",\"name\":\"Duration\",\"editable\":false,\"compareValue\":null}],\"filters\":{\"from_date\":\"2023-01-01\",\"to_date\":\"2023-10-13\",\"agent_id\":\"AGNT-001\",\"call_type\":\"All\"}}",
  "letterhead": null,
- "modified": "2024-10-13 12:14:11.072552",
+ "modified": "2024-10-28 11:54:09.154999",
  "modified_by": "Administrator",
  "module": "cisco",
  "name": "Report 1",

@@ -4,8 +4,15 @@
 frappe.query_reports["DATA CENTER"] = {
 	"filters": [
         {
-            "fieldname": "date",
-            "label": __("Date"),
+            "fieldname": "from_date",
+            "label": __("From Date"),
+            "fieldtype": "Date",
+            "default": frappe.datetime.nowdate(),
+            "reqd": 1
+        },
+        {
+            "fieldname": "to_date",
+            "label": __("To Date"),
             "fieldtype": "Date",
             "default": frappe.datetime.nowdate(),
             "reqd": 1
@@ -14,7 +21,7 @@ frappe.query_reports["DATA CENTER"] = {
             "fieldname": "status",
             "label": __("status"),
             "fieldtype": "Select",
-            "options": ["All", "Draft", "Rejected","Approval pending","Approved","Cancelled"],
+            "options": ["All", "Draft", "Rejected","Pending Approval","Approved","Cancelled"],
             "default": "All"
         }
     ]
