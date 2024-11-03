@@ -10,7 +10,7 @@ def execute(filters=None):
 
 	columns = get_columns(filters)
 	data = get_data(filters)
-	summary = get_summary(filters, data)
+	summary = get_summary(filters)
 	chart = get_chart_data(filters)
     
 	return columns, data, None,chart,summary
@@ -200,39 +200,77 @@ def get_data(filters):
 
 	return data
 
-def get_summary(filters, data):
+# def get_summary(filters, data):
 
-    total_status = len(data)
-    # frappe.msgprint(total_status)
-    if filters.get("status") == "Draft":
-        summary = [
-            {"label": "Total Draft Requests", "value": total_status, "datatype": "Int"}
-        ]
-    elif filters.get("status") == "Rejected":
-        summary = [
-            {"label": "Total Rejected Request", "value": total_status, "datatype": "Int"}
-        ]
-    elif filters.get("status") == "Rejected":
-        summary = [
-            {"label": "Total Rejected Request", "value": total_status, "datatype": "Int"}
-        ]
-    elif filters.get("status") == "Pending Approval":
-        summary = [
-            {"label": "Total Pending Aprroval Request", "value": total_status, "datatype": "Int"}
-        ]
-    elif filters.get("status") == "Approved":
-        summary = [
-            {"label": "Total Approved Request", "value": total_status, "datatype": "Int"}
-        ]
-    elif filters.get("status") == "Cancelled":
-        summary = [
-            {"label": "Total Cancelled Request", "value": total_status, "datatype": "Int"}
-        ]
-    elif filters.get("status") == "All":
-        summary = [
-            {"label": "Total Request", "value": total_status, "datatype": "Int"}
-        ]
+#     total_status = len(data)
+#     # frappe.msgprint(total_status)
+#     if filters.get("status") == "Draft":
+#         summary = [
+#             {"label": "Total Draft Requests", "value": total_status, "datatype": "Int"}
+#         ]
+#     elif filters.get("status") == "Rejected":
+#         summary = [
+#             {"label": "Total Rejected Request", "value": total_status, "datatype": "Int"}
+#         ]
+#     elif filters.get("status") == "Rejected":
+#         summary = [
+#             {"label": "Total Rejected Request", "value": total_status, "datatype": "Int"}
+#         ]
+#     elif filters.get("status") == "Pending Approval":
+#         summary = [
+#             {"label": "Total Pending Aprroval Request", "value": total_status, "datatype": "Int"}
+#         ]
+#     elif filters.get("status") == "Approved":
+#         summary = [
+#             {"label": "Total Approved Request", "value": total_status, "datatype": "Int"}
+#         ]
+#     elif filters.get("status") == "Cancelled":
+#         summary = [
+#             {"label": "Total Cancelled Request", "value": total_status, "datatype": "Int"}
+#         ]
+#     elif filters.get("status") == "All":
+#         summary = [
+#             {"label": "Total Request", "value": total_status, "datatype": "Int"}
+#         ]
+#     return summary
+
+def get_summary(filters):
+    from_date=filters.get("from_date")
+    to_date=filters.get("to_date")
+    
+	
+    data = frappe.db.get_all(
+		
+		'Data Center',
+		filters={
+           'date1':[
+			   'between',
+			   [from_date,
+			   to_date]
+		   ],
+		},pluck='workflow_state')
+	
+    summary = [
+		{"label": "Total Draft Requests", "value": data.count("Draft"), "datatype": "Int"}
+	]
+    summary += [
+		{"label": "Total Rejected Request", "value": data.count("Rejected"), "datatype": "Int"}
+	]
+    summary += [
+		{"label": "Total Pending Aprroval Request", "value": data.count("Approval pending"), "datatype": "Int"}
+	]
+    summary += [
+		{"label": "Total Approved Request", "value": data.count("Approved"), "datatype": "Int"}
+	]
+    summary += [
+		{"label": "Total Cancelled Request", "value": data.count("Cancelled"), "datatype": "Int"}
+	]
+    summary += [
+		{"label": "Total Requests", "value": len(data), "datatype": "Int"}
+	]
+	
     return summary
+
     
 
 from collections import Counter
