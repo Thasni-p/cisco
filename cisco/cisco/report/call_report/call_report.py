@@ -372,8 +372,8 @@ def get_summary(filters, data):
     elif filters.get("call_type") == "All":
         summary = [
             {"label": "Total Calls", "value": total_calls, "datatype": "Int"},
-			{"label": "Total Calls", "value": count_of_in ,"datatype": "Int"},
-			{"label": "Total Calls", "value": count_of_out, "datatype": "Int"},
+			{"label": "Total Incoming Calls", "value": count_of_in ,"datatype": "Int"},
+			{"label": "Total OUtgoing Calls", "value": count_of_out, "datatype": "Int"},
 			{"label": "Total Calls", "value": count_of_miss, "datatype": "Int"},
             {"label": "Total Duration", "value": total_duration, "datatype": "Duration"}
         ]
