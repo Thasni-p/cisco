@@ -1,7 +1,7 @@
 {
  "attach_print": 1,
  "channel": "Email",
- "creation": "2024-10-22 21:56:23.993844",
+ "creation": "2024-11-05 09:58:12.672076",
  "days_in_advance": 0,
  "docstatus": 0,
  "doctype": "Notification",
@@ -12,21 +12,20 @@
  "is_standard": 1,
  "message": "<p>Add your message here</p>\n",
  "message_type": "Markdown",
- "modified": "2024-10-27 10:26:22.002379",
+ "modified": "2024-11-05 12:30:17.500786",
  "modified_by": "Administrator",
  "module": "cisco",
  "name": "Data Center Approval",
  "owner": "Administrator",
- "print_format": "format 1",
+ "print_format": "Data center Access Form",
  "recipients": [
   {
-   "receiver_by_document_field": "email_address",
-   "receiver_by_role": ""
+   "receiver_by_document_field": "email_address"
   }
  ],
- "send_system_notification": 1,
+ "send_system_notification": 0,
  "send_to_all_assignees": 0,
- "sender": "Thasni pattathil",
- "sender_email": "thasni.pattathi@katara.net",
- "subject": "Data center approval"
+ "sender": "thasni",
+ "sender_email": "pthasni33@gmail.com",
+ "subject": "Data Center Approval Status"
 }

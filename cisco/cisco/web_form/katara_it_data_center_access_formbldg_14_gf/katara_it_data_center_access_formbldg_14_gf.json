@@ -21,7 +21,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2024-10-28 12:38:57.744580",
+ "modified": "2024-11-10 08:47:06.559060",
  "modified_by": "Administrator",
  "module": "cisco",
  "name": "katara-it-data-center-access-formbldg-14-gf",
@@ -33,6 +33,30 @@
  "show_sidebar": 0,
  "title": "KATARA IT DATA CENTER ACCESS FORM(Bldg-14 GF)",
  "web_form_fields": [
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldtype": "HTML",
+   "hidden": 0,
+   "max_length": 0,
+   "max_value": 0,
+   "options": "<p> KATARA IT DATA CENTER ACCESS FORM (Bldg-14 GF)</p>",
+   "precision": "",
+   "read_only": 0,
+   "reqd": 0,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldtype": "HTML",
+   "hidden": 0,
+   "max_length": 0,
+   "max_value": 0,
+   "options": "<p> [KATARA IT OPERATIONS Contact : 44081919]</p>",
+   "precision": "",
+   "read_only": 0,
+   "reqd": 0,
+   "show_in_filter": 0
+  },
   {
    "allow_read_on_all_link_options": 0,
    "fieldname": "applicant_name",
@@ -140,6 +164,18 @@
   },
   {
    "allow_read_on_all_link_options": 0,
+   "fieldtype": "HTML",
+   "hidden": 0,
+   "max_length": 0,
+   "max_value": 0,
+   "options": "<p> Requested Access Room at B14</p>",
+   "precision": "",
+   "read_only": 0,
+   "reqd": 0,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
    "default": "0",
    "fieldname": "ups_room",
    "fieldtype": "Check",
@@ -240,7 +276,7 @@
    "max_length": 0,
    "max_value": 0,
    "precision": "",
-   "read_only": 0,
+   "read_only": 1,
    "reqd": 0,
    "show_in_filter": 0
   },
@@ -253,7 +289,7 @@
    "max_length": 0,
    "max_value": 0,
    "precision": "",
-   "read_only": 0,
+   "read_only": 1,
    "reqd": 0,
    "show_in_filter": 0
   }

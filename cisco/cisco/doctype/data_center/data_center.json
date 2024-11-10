@@ -5,6 +5,8 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "heading",
+  "heading2",
   "applicant_name",
   "applicant_departmentcompany",
   "dc_access_from_date_time",
@@ -23,8 +25,7 @@
   "date",
   "katara_it_managerhead_of_it_operations__name",
   "katara_it_approval_signature",
-  "date1",
-  "amended_from"
+  "date1"
  ],
  "fields": [
   {
@@ -59,10 +60,12 @@
   },
   {
    "allow_in_quick_entry": 1,
+   "allow_on_submit": 1,
+   "bold": 1,
    "fieldname": "requested_access_room_at_b14",
-   "fieldtype": "Heading",
+   "fieldtype": "HTML",
    "label": "Requested Access Room at B14",
-   "options": "Requested Access Room at B14"
+   "options": "<p> Requested Access Room at B14</p>"
   },
   {
    "default": "0",
@@ -129,20 +132,28 @@
    "options": "Email"
   },
   {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Data Center",
-   "print_hide": 1,
-   "read_only": 1,
-   "search_index": 1
+   "allow_in_quick_entry": 1,
+   "allow_on_submit": 1,
+   "bold": 1,
+   "fieldname": "heading",
+   "fieldtype": "HTML",
+   "label": "KATARA IT DATA CENTER ACCESS FORM (Bldg-14-GF)",
+   "options": "<p>KATARA IT DATA CENTER ACCESS FORM (Bldg-14-GF)</p>"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "allow_on_submit": 1,
+   "bold": 1,
+   "fieldname": "heading2",
+   "fieldtype": "HTML",
+   "label": "[KATARA IT OPERATIONS Contact :44081919]",
+   "options": "<p>[KATARA IT OPERATIONS Contact :44081919]</p>"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-10-28 12:59:32.435807",
+ "modified": "2024-11-10 08:43:12.631347",
  "modified_by": "Administrator",
  "module": "cisco",
  "name": "Data Center",
